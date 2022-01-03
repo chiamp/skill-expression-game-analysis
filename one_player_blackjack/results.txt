@@ -1,0 +1,3 @@
+AI strategy empirical winrate: 0.4084   Random strategy empirical winrate: 0.183        Empirical skill score: 0.5519098922624888
+
+Optimal strategy theoretical winrate: 0.42380952380952375       Random strategy theoretical winrate: 0.18898809523809526     Theoretical skill score: 0.5540730337078661

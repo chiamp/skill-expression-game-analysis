@@ -1,0 +1,283 @@
+- a metric that can measure how much skill expression vs randomness is there in a game
+	- metric: a percentage denoting how much control you have over the outcome of the game (e.g. 100% = chess, 0% = coinflip)
+		- REAL DEFINITION: how much more likely you would win if you play optimally than if you play randomly
+		- i.e. metric = winrate_if_play_optimally - winrate_if_play_randomly
+			- where winrate_if_play_optimally >= winrate_if_play_randomly
+			- alternatively written as: metric = ( games_won_if_play_optimally - games_won_if_play_randomly ) / num_games_played
+				- where each game instance is played both optimally and randomly
+			- the bigger value for the metric, 
+				- the more skill expression there is
+				- the more agency a player has over the outcome of the game
+				- the less number of "paths to victory" there are (paths to victory get narrower)
+				- and vice versa
+					- if playing randomly lets you win the same amount of games as if you played optimally,
+						- then all possible paths in the game are "paths to victory"
+							- playing optimally is just picking one of these paths, which is trivial
+		- would have to train an optimal AI agent to get the winrate_if_play_optimally value
+			- for small games, we can explicitly learn the Q-function, but for more complex games, we'd need an approximation
+			- if the approximation is superhuman level (i.e. better than any human ever), would we even need an optimal AI to accurately calculate the metric?
+				- yes we would, if we want an upper bound of winrate_if_play_optimally (otherwise we would only get a lowerbound)
+			- could also calculate winrate_if_play_optimally if we enumerate through all (state,action) sequences,
+				- and calculate the probability of reaching an end state where we win if we pick the optimal action at every timestep
+		- might be different for 2-player games actually (since what if both players play optimally?), so best to start with 1 player games
+			- maybe could be extended to 2-player games by measuring if both players play optimally, how often are you expected to win?
+		- to calculate the theoretical probability that a random player can win the game:
+			- iterate through all possible (state,action) sequences of the game
+			- for each end states that resulted in a win, calculate the probability of reaching that end state
+				- given probabilities for reaching certain intermediate states (based on the transition model),
+				- and the probability of selecting that particular action (uniform probability)
+				- multiply all the probabilities in that (state,action) sequence path to get the probability of reaching that end state, by playing randomly
+			- add all probabilities for all end states that resulted in a win to get the total probability (i.e. winrate_if_play_randomly)
+			- otherwise, you can use simulations to get an approximation
+		- for 2-player games, metric can be calculated as:
+			- metric = winrate_against_optimal_opponent_if_play_optimally - winrate_against_optimal_opponent_if_play_randomly
+			- the notion of optimality may not be clear in multiplayer imperfect information game
+				- depends on nash equilibrium?
+				- for poker, is there an optimal strategy that is agnostic of player and game history?
+		- for games that allow draws, as long as playing optimally will result in some non-zero percentage of winning, the definition of metric still works
+			- if playing optimally gives a zero-percent chance of winning, then change the metric calculation to this:
+				- metric = drawrate_if_play_optimally - drawrate_if_play_randomly
+	- games with higher skill expression and/or less randomness = games are skewed in favor of the more skilled player
+		- e.g. chess
+	- games with lower skill expression and/or more randomness = games are less skewed and tend toward even win/loss ratio
+		- e.g. coinflip
+	- thesis: there's some optimal value of skill expression and randomness in the game, that makes the game popular
+		- e.g. hearthstone vs mtg
+	- unless the player is perfect, some of the variance of games comes from the player themselves (they play imperfectly)
+		- can this be factored out / decoupled from the variance originating from the randomness of the game itself?
+		- might have to make an assumption on player variance; e.g. gaussian distribution to model player inconsistency
+			- or use a deterministic game as a baseline for player variance (e.g. chess)
+				- then if a game like hearthstone has the same player variance, then we would conclude that randomness has no effect on win/loss
+				- this assumes that the player variance is the same throughout all games (i.e. we are equally inconsistent regardless of the game)
+					- which might not be true, for example, if a game has a lot of choices, perhaps its easier for humans to make mistakes, compared to games with less choice
+					- e.g. its less likely someone blunders in tictactoe compared to chess, even though both games are deterministic
+						- could normalize this based on average number of actions per timestep, and average number of timesteps per game
+						- player variance should scale based on these two factors, and we can calculate by how much if we look at the game data, and fit the factors to a model
+							- could also normalize based on other factors like game time and number of players
+								- in theory if these factors don't affect player variance, then it would show in the data (given that we look at enough board games)
+	- potential games:
+		- start with games that have datasets of players, their skill ratings and match record
+			- chess, hearthstone, mtg
+			- otherwise you would need to code the game, and develop AI of different skill levels to generate data
+		- tictactoe (100% tie if played optimally by both players)
+			- code bots that have hard-coded strategies, and optimal bots that have a certain percentage of playing a random move instead of the optimal move
+			- have them play many games against each other to get the win-rate (which can be used as a proxy for skill level of each bot)
+			- then change the rules of tictactoe, so that some randomness is involved (e.g. there's a certain percentage chance that your move is ignored, and a random move is played instead)
+				- observe how the win-rates between each bot changes and how the win/loss variance changes
+				- if we try 100% randomness, then win-rates should be 50-50 regardless of skill level and the variance should be at a maximum
+		- blackjack or toy blackjack (42.22% win, 8.48% tie, and 49.10% loss, if played optimally)
+			- why are people addicted to casino games? does it have something to do with the metric?
+				- people play slots with really bad odds or even the lottery which is a coinflip simulator with even worst odds
+		- 1 player games like solitaire (80% win if played optimally)
+	- use this metric in addition to other metrics of board games like play time, number of players, price, game breadth, game depth etc., to develop a model to predict how popular a game will be
+		- if model is accurate and the metric proves vital in prediction, then we can try to reverse-engineer game rules to see which will make a game popular
+		- could train on text-based rules, and predict the metric value
+			- or code the game itself and calculate the metric value somehow
+	- https://math.stackexchange.com/questions/2354586/objective-metric-to-describe-skill-vs-luck-in-games-that-include-randomness
+	- https://www.uni-trier.de/fileadmin/fb4/prof/BWL/FIN/Veranstaltungen/duersch--Skill_and_chance_2018-03-07.pdf
+		- given match data, apply an elo rating system to all players based on their match history
+		- games with higher skill expression will have a wider distribution (larger standard deviation) of elo ratings (e.g. chess)
+		- games with higher random chance will have a lower distribution (lower standard deviation) of elo rating (e.g. a coinflip at the most extreme example)
+		- assumption is that there are players of different (non-uniform) skill and that player matchups are not uniform in terms of skill level (i.e. good players have a chance to play bad players)
+
+=============================================================================================================================================================================================================================
+
+- motivation: why are some games more popular than others?
+	- hearthstone vs mtg
+	- party/casual games like sushi go and incan gold, vs more intense games like istanbul
+- when introducing the metric, give basic examples on how the metric could differ
+	- guess the coinflip vs. chess
+	- toy examples written in my notebook
+- assumption that random strategy == no-skill
+	- there are strategies where they perform worst than no-skill (e.g. always hitting till bust)
+	- omit those strategies because they perform worst than a random number generator that has no strategy (therefore no skill)
+		- you could essentially reason that those aren't even strategies, since a strategy implies some sort of advantage that can be gained by implementing it
+		- it would be a strategy that does worse than blindfolding yourself and picking random moves
+	- could use different strategies as a new benchmark instead of just random policy
+		- e.g. always-hit would be a new baseline strategy with a winrate of 0%
+		- could evaluate the differences between each strategy by comparing their winrates
+			- would their winrates change if they play against an opponent with a specific strategy? (i.e. higher winrates against some types of strategies than others)
+				- some sort of nash equilibrium?
+			- at that point it'd just be comparing win-rates, which isn't anything new or novel
+				- although if you could hardcode those rules or train an AI to implement your strategies, you can generate lots of data
+					- and see how the strategy performs against others (e.g. good for training for competitive tournaments)
+- random strategy acts as a good baseline/benchmark
+- detail how RL agent is trained
+	- how its trained if the agent busts, if dealer busts, and if dealer limit is reached
+- how useful is a theoretical lower bound of skill expression, determined by a superhuman AI
+	- if human level play can never reach that level anyways, is this metric useful?
+		- e.g. if AI has a 90% improvement over random play, but human skill expression can only improve by 5%,
+			- is that metric useful at all?
+			- or should we cap it? (i.e. have another metric that's human-centered, and thus would be 5% instead of 90%)
+			- if we cap it, we would need data on the top player of the game and calculate his average win percentage
+				- could be calculated if we had an AI that implemented his strategies
+				- are there other ways that are more feasible?
+- interpreting the metric
+	- optimal_winrate / random_winrate
+	- optimal_winrate - random_winrate
+	- 1 - random_winrate/optimal_winrate
+- address dealing with draws
+	- metric measures winrate difference, but you can look at differences between draw rates as well
+	- in the case where optimal play leads to 0% winrate, drawrate is the next desirable outcome (essentially it becomes the new "winning")
+- multiplayer
+	- random play vs all other optimal players
+	- training RL agents against each other to get optimal agents
+- talk about the other paper you read
+	- having data vs having an optimal strategy / AI agent
+	- could also train suboptimal AI's / use different hard-coded strategies and have them play against each other to generate data
+		- two assumptions would be that the AI's are different in skill level, and the matchups are non-uniform in terms of skill level
+- when you have no data or it's hard to get data, this metric method is useful
+	- although you would need to code in the game and train an AI to play it optimally
+	- but it would give you a lower bound on how much skill matters / contributes to the outcome of the game vs. chance
+	- the paper method assumes a non-uniform skill distribution of the players playing the game
+		- but it could very well be that they are all similar in skill level, relative to the absolute highest skill possible in the game
+			- training an AI could help see how high that skill ceiling is, whereas the paper method wouldn't be able to show that, since it's based on human data
+			- would knowing the absoute highest skill ceiling possible in a game be useful? 
+				- Could motivate people to improve, but it also may not be humanly possible to ever reach that level
+
+- find a two-player game, preferably with some stochastic elements, to test training an optimal AI against itself
+- do all zero-sum multiplayer games tend toward equal wins and losses and draws if all players play optimally?
+	- if so, then wouldn't the optimal winrate trivially be 50%, without having to calculate or train an AI to see?
+		- then we would just need to simulate games for a random strategy to get a benchmark comparison
+		- however, in order to calculate the random winrate, we would need an optimal strategy for all the other players/opponents, for multiplayer games
+		- thus the optimal strategy should approach 50% winrate (or 100% drawrate) against other optimal strategies,
+			- and we can use this as an indication on whether an optimal strategy has converged in training,
+			- although we'll never know for sure, as suboptimal strategies could also have 50% winrate (or 100% drawrate) against each other
+	- even in imbalanced game formats (e.g. different mtg decks, different roles in a game), if all players play each role an equal amount of times, the win/loss/draw record should even out to 50%
+	- even if its not zero-sum (win = 1, loss = 0.1), if each player plays each role an equal amount of times, they should both earn the same amount of utility/reward
+	- for zero-sum games that don't have a single optimal strategy, where one strategy could be better against a specific other type of strategy (e.g. rock paper scissors),
+		- if you average many games between two optimal agents, wouldn't their win/loss/draw rate even out to 50%?
+		- an optimal agent can learn to have equal probability for all possible optimal strategies, and then just randomly sample an action from the set of optimal actions
+	- even if the distribution of wins is really skewed because of role imbalance, if both players play both roles, the winrate/drawrate evens out over time
+		- instead we should be comparing the winrate of optimal and random strategies within each unique role of the game, not between each other
+			- optimal winrate of role A can be calculated by playing an optimal AI for role A and role B, against each other
+			- random winrate of role A can be calculated by playing a random agent for role A and an optimal agent role B, against each other
+			- optimal winrate of role B can be calculated by playing an optimal AI for role B and role A, against each other
+			- random winrate of role B can be calculated by playing a random agent for role B and an optimal agent role A, against each other
+			- this can extend to more than 2 players by fixing all other plays to be optimal, and switching around your agent's strategies, to get optimal and random winrate statistics
+			- therefore in the case of role-imbalance, regardless of PvP or PvE / adversarial vs cooperative games, the optimal and random winrate of each role can be determined by training an AI
+				- this also applies to non-zero sum games, which may come from role-imbalance games (where one role has a higher chance of winning than the other)
+			- in role-balanced games (where everyone player has the same role), then every player should have the same chance of winning, if they all play the optimal strategy
+				- for these games, we can assume 50% as the optimal winrate (and/or 100% drawrate if draws are allowed)
+				- however if it's non-zero sum, then we can calculate the metric based on expected utility/reward gained
+					- e.g. chess or tictactoe where winner gets 1.0 reward and loser gets 0.7 reward
+					- this could affect the avg_random_reward_gained, so that less skill is required to get the same reward if it was zero-sum (e.g. 1.0 for win, -1.0/0.0 for loss)
+					- TODO: LOOK UP ZERO-SUM GAMES ON WIKI FOR THE FORMAL DEFINITION AND EXAMPLES
+						- FIND / DESIGN A GAME THAT'S NON-ZERO SUM AND ROLE-IMBALANCED, AND THEN TRAIN OPTIMAL AI'S FOR EACH ROLE (most probably will calculate the metric in terms of expected utility/reward)
+							- E.G. TIC-TAC-TOE (win=1.0 reward , lose=0.7 reward); i.e. non-zero sum
+								- with first player being restricted on where he can place tiles on the first move (e.g. not the centre); i.e. role-imbalance
+								- or rather, actually define role-imbalance as roles that have DIFFERENT WINRATES, then train an AI to find optimal strategies for each role
+									- the different winrates could be due to different levels of access to resources, or number of starting resources, or restrictions/additions of moves compared to other roles
+						- first do a zero-sum, role-imbalanced game with 2 players, and find the optimal and random winrate
+						- then do a non-zero-sum, role-imbalanced game of 3 players, and find the optimal and random expected utility/reward
+							- then normalize the utility/reward in terms of actual game outcomes for each role, to quantify the improvement of using an optimal strategy over a random one for each role
+						- technically chess is role-imbalanced; white has a slight advantage going first
+							- you could argue the same for tic tac toe, but since the game is solved, optimal play results in 100% draw rate everytime, regardless of role
+							- that begs the question, for deterministic, role-imbalanced games, would optimal play result in either 50% winrate / 100% drawrate for the roles, or 100% winrate for one role, and 0% winrate for all other roles
+								- would only role-imbalanced games that are stochastic have win/draw rates that are not at the extremes of 0% and 100%?
+								- should test out both deterministic and stochastic, role-imbalanced games
+					- using utility/reward as a measure could serve as a proxy for win/loss rate
+						- if avg_random_reward_gained / optimal_random_reward_gained is 90%,
+							- then random strategy accounts for 90% of all possible reward gained using an optimal strategy
+							- and optimal strategy only accounts for 10% of the reward gained
+								- i.e. how much does skill "matter" in this game
+								- why use strategy / skill, when I can just play randomly and get as much as 90% of the reward I would've gained if I used an optimal strategy
+- for cooperative non-zero sum games (e.g. some PvE game like Aeon's end or Pandemic), then training optimal AI agents would still be useful, since the winrate is not necessarily 50%
+	- having an optimal agent with optimal teammates will perform strictly better than a random agent with optimal teammates
+- in games where there is not a single optimal strategy (e.g. tictactoe, poker, etc.), can you train an agent to learn all optimal strategies, and have them be encompassed in a single q-value function?
+
+- is there a way to calculate the average effect your actions have on affecting the winrate of the game?
+	- could you just do (optimal_winrate - random_winrate) / average_timesteps_per_game
+
+- calculating variance in a game
+	- can be modelled as a binomial distribution, with each trial being a playthrough of the game
+	- the optimal win rate learned from an AI will be p, the probability of a successful trial
+	- then the variance can be measured;
+		- 50-50 games will have the highest variance (and therefore take longer to converge to the expected 50% winrate)
+		- 90-10 and 10-90 games will have lower variance (and therefore take shorter to converge to the expected 90% and 10% winrates respectively)
+	- so the process would be to get a bunch of statistics on board game popularity / play rates
+		- code those board games and train an AI to find an approximation of the optimal win rate
+		- then use that win rate to calculate variance
+		- then maybe you can find some trend between that variance and their popularity
+		- or whether the variance in combination to other factors like game length, number of players, etc. show a trend with popularity
+- role imbalance vs roles with different winrates
+	- find a better term for roles with different winrates(?)
+	- roles could be imbalanced in the sense that they have different moves, access to resources, etc.
+		- but optimal play for all roles could still result in equal winrates (e.g. optimal play in tictactoe leads to 100% drawrate, even though the X role has 1 more turn than the O role)
+- it's possible that skill score can be negative
+	- if the AI agent is poorly trained and its strategy performs worse than the random strategy
+	- or if we're evaluating some strategy that performs worse than the random strategy
+- use different benchmarks
+	- rather than using a random strategy as the benchmark, could use a basic strategy that you'd think someone could come up with within 5 minutes of learning the game rules, as a benchmark for a strategy that has little to zero skill
+	- rather than using an optimal strategy, use strategies based on human heuristics
+- could also quantify the role of chance in terms of the difference between 100% winrate and the optimal winrate
+	- if the optimal winrate is 100%, then even if a game has chance elements, it doesn't affect the outcome of the game under optimal play
+	- if the optimal winrate is 75%, then chance has an effect on the outcome of the game
+		- the effect would be a measurement from 0-100%, on how much chance has an effect on the outcome of the game
+		- perhaps games with a 70% winrate under optimal play and 30% lossrate (due to chance) is an ideal balance for a game that's popular
+		- this works for single player games, but for multiplayer games, the winrate should tend to 50% under optimal play if roles are balanced(?)
+
+- oprd calculation is based on the optimal strategy for the player,
+	- if it knows that the dealer's strategy is random
+
+- however aprd is around ~65%, because the player agent was trained against a dealer agent (which converged to optimal play)
+	- therefore when evaluating winrate, aprd is lower than oprd because the player agent's strategy was optimized against an optimal opponent, rather than a random opponent
+	- SOLUTION: train a separate player agent against a random dealer to get a player strategy optimized against such an opponent
+		- then aprd should converge to oprd
+
+- rpod = rpad because specifically in this game, the dealer always goes after the player
+	- therefore the dealer strategy always optimizes for the best outcome, given the game state the player steered them into
+		- a random player policy vs an optimal player policy would just choose which game states we're more likely to end up in before it's the dealer's turn to go
+		- but regardless of how we end up there, the optimal strategy for the dealer from that point forward would be the same
+
+=============================================================================================================================================================================================================================
+
+TODO
+- google and read wiki on zero-sum and non-zero-sum games
+- google and read wiki on games with imbalanced roles
+- google and read wiki on nash equilibrium
+- comment all code
+- do deterministic single player blackjack for both a sequence of cards that guarantee a win and guarantee a loss, if you play optimally
+	- get random_winrate as well for both these setup conditions
+- if you win 75% of the time playing optimally, win 25% of the time playing randomly
+	- is it 1/3 of the wins attributed to random chance, or 1/3 of the actions not relevant to the outcome? Or somewhere inbetween or even further or go back?
+	- can test this theoretically, if you calculate all possible game sequences and apply a mixed strategy where you play optimally 2/3rds of the time and randomly 1/3rd of the time
+		- if so, then this mixed strategy should approach the optimal win rate (in reality it probably doesn't, but you should double check anyways)
+	- some states probably matter much more for action selection than others (e.g. if you played optimally to reach states where the action-values are identical, then you could randomly sample and the outcome wouldn't matter much)
+	- or look at the average differences between the action-values for each possible action at each possible state; weighted by the probability of reaching those states
+		- and/or look at variance between action-values?
+		- infeasible for more complex games (can't iterate through all possible game sequences)
+			- therefore for more complex games, the only option is to sample many games with an approximate optimal AI to get an approximation on theoretical win rate
+		- alternatively, you could just sample games with an optimal AI and accumulate differences/variance of action-values throughout all games, and take the average
+			- that would serve as a good approximation(?)
+			- you could try this with calculating the actual theoretical average difference/variance in action-values, to see if they're similar
+			- so if Q(s) --> [0.1,0.9,0.2,0.2], then just subtract from the mean, square it, sum it up and then square root to get the variance
+			- so [0.1,0.9,0.2,0.2] would be higher variance than [0.9,0.9,0.9,0.9]
+				- [0.9,0.9,0.9,0.9] would have 0 variance
+					- if this is true throughout all states, then actions don't matter
+		- empirical approximation: sample games with optimal AI, accumulate all action-value variances across all states, across all games, and then average over total number of states reached across all games
+		- theoretical calculation: for every state reached via optimal strategy, calculate variance, and then weight it by probability of reaching that state if we play optimal strategy
+		- use variance, stdev or absolute average deviation from mean?
+		- actually you just need to calculate the difference between the optimal action value and the average action value for every state
+			- at every state, calculate the average action value, which gives the probability of winning if you use a random strategy (assuming that an action-value of 1 = win and 0 = lose)
+			- compute M_i = max(Q(s_i)) - average(Q(s_i)) for all states s_i and sum them up
+			- sum up all M_i, weighting each M_i based on the probability of reaching state s_i if we use optimal strategy
+			- can be approximated via optimal AI strategy, max(Q*(s_i)) - average(Q*(s_i)), and average the number of states sampled across all games
+				- states that are more easily reached will have a higher occurrence, so should automatically weight the states with high enough number of game samples
+			- interpreting the metric
+				- a value of 0.7 can be interpreted as playing an optimal strategy will increase your chances of winning by 0.7 compared to playing a random strategy (assuming that an action-value of 1 = win and 0 = lose)
+				- isn't this the same exact interpretation as theoretical_win_rate - random_win_rate?
+					- in that case: theoretical_win_rate - random_win_rate = ( max(Q*(s_i)) - average(Q*(s_i)) ), averaged over the number of states sampled across all games
+						- this should happen if my interpretation is correct
+- do stochastic two player blackjack (replace dealer with another player; therefore a more refined-strategy can be implemented)
+	- can see where the always-hit-till-dealer-limit strategy stands between the optimal and random dealer strategy
+		- train both player and dealer agents, and then try optimal, dealer_limit, and random strategies against the optimal player agent to get winrates
+		- try optimal and random player strategies against optimal dealer
+	- calculate metric by winrate
+	- alter the game so that it's non-zero sum and calculate metric by utility/reward
+- do deterministic two player blackjack
+	- do the same strategy matchups as stochastic two-player blackjack
+	- calculate metric by winrate
+	- alter the game so that it's non-zero sum and calculate metric by utility/reward
+- find a balanced version of two-player blackjack where winrate is 50% for either player?
+- do the same as the two previous bullet points, but with three players

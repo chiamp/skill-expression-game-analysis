@@ -1,0 +1,5 @@
+Player empirical winrate (apad): 0.2957 Player empirical winrate (rpad): 0.1036 Player empirical skill score: 0.6496449103821453
+Dealer empirical winrate (apad): 0.7042999999999999     Dealer empirical winrate (aprd): 0.16859999999999997    Dealer empirical skill score 0.7606133749822522
+
+Player theoretical winrate (opod): 0.3007936507936507   Player theoretical winrate (rpod): 0.10327380952380952  Player theoretical skill score: 0.6566622691292887
+Dealer theoretical winrate (opod): 0.6992063492063493   Dealer theoretical winrate (oprd): 0.17083333333333328  Dealer theoretical skill score 0.7556753688989789
