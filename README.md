@@ -4,9 +4,14 @@ This is a repo where I describe a method to measure the amount of skill expressi
 ## Table of Contents
 * [Motivation](#motivation)
 * [Defining Skill](#defining-skill)
-* [Algorithms and Experiments](#algorithms-and-experiments)
-* [Results](#results)
-* [Caveats](#caveats)
+* [Skill Score](#skill-score)
+* [Explicitly Calculating Skill Score](#explicitly-calculating-skill-score)
+* [Approximating Skill Score](#approximating-skill-score)
+* [Single-Player Blackjack](single-player-blackjack)
+* [Generalizing Skill Score for Multi-Player Games](generalizing-skill-score-for-multi-player-games)
+* [Two-Player Blackjack](#two-player-blackjack)
+* [Conclusion](#conclusion)
+* [Open Discussions](#open-discussions)
 * [Future Work](#future-work)
 * [File Descriptions](#file-descriptions)
 * [Additional Resources](#additional-resources)
@@ -210,9 +215,11 @@ In the player win rate graph:
 	* after 9000 games of training, the empirical win rate of the random player agent's strategy (against the AI dealer agent's strategy) is 10.36%, approximated by sampling 10000 games
 
 Therefore the theoretical skill score for the player role is:
+
 <img src="https://render.githubusercontent.com/render/math?math=s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} = 1 - \frac{0.10327}{0.30079} = 0.65667">
 
 And the empirical skill score for the player role is:
+
 <img src="https://render.githubusercontent.com/render/math?math=s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} \approx 1 - \frac{\widetilde{w}_r^{(p)}}{\widetilde{w}_a^{(p)}} = 1 - \frac{0.1036}{0.2957} = 0.6496">
 
 In the dealer win rate graph:
@@ -226,9 +233,11 @@ In the dealer win rate graph:
 	* after 9000 games of training, the empirical win rate of the random dealer agent's strategy (against the AI player agent's strategy) is 16.86%, approximated by sampling 10000 games
 
 Therefore the theoretical skill score for the dealer role is:
+
 <img src="https://render.githubusercontent.com/render/math?math=s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} = 1 - \frac{0.17083}{0.69921} = 0.75568">
 
 And the empirical skill score for the dealer role is:
+
 <img src="https://render.githubusercontent.com/render/math?math=s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} \approx 1 - \frac{\widetilde{w}_r^{(d)}}{\widetilde{w}_a^{(d)}} = 1 - \frac{0.1686}{0.7043} = 0.76061">
 
 Similar to the results of the one-player blackjack experiment, we can see here that approximating the optimal and random win rates for both player roles using AI agents gives us a good approximation of the true skill score for both player roles. Since the dealer role has a higher skill score than the player role, we can then interpret that skill affects the outcome of the game for the dealer role more than the player role.
@@ -242,31 +251,39 @@ We also see the optimal and random win rate of the player drop considerably in t
 
 It is interesting to see the skill score of the player actually go up despite the optimal and random player win rate going down in the two-player game compared to the single-player game. This is due to the fact that playing against the optimal dealer strategy reduces the random player win rate by a bigger factor than the optimal player win rate. As a consequence, a larger portion of the player's win rate is attributed to skill.
 
-
-
+## Conclusion
+In this project, I present a method to calculate the skill score: a measurement that describes how much skill affects the outcome of a game, for every player role in the game. The method is as follows:
+* create a virtual version of the game
+* if it's computationally feasible:
+	* for every player role in the game:
+		* explicitly calculate the optimal and random win rates by enumerating all possible game sequences
+		* use the optimal and random win rates to calculate the skill score for this particular player role
+* if it's not computationally feasible:
+	* train an AI agent for each player role to learn an optimal strategy given that all other players are using an optimal strategy
+		* extract the approximated optimal win rate for every player from the AI agents' learned strategies
+	* for every player role <img src="https://render.githubusercontent.com/render/math?math=p"> in the game:
+		* train an AI agent for each other player role to learn an optimal strategy given that this specific player role <img src="https://render.githubusercontent.com/render/math?math=p"> is using a random strategy and all other agents are using an optimal strategy
+		* extract the approximated random win rate for the player role <img src="https://render.githubusercontent.com/render/math?math=p">
+	* use the approximations for the optimal and random win rate to get the approximated skill scores for each player role
 
 <img src="https://render.githubusercontent.com/render/math?math=
 
 
 
-## Algorithms and Experiments
 
-## Results
-
-## Discussion
-Skill score isn't the only way of measuring. Evaluating a strategy theoretically or empirically through game sampling gives an objective measure of how strong that strategy is relative to no-skill and maximum skill strategies.
+## Open Discussions
+In this section, I outline some ideas and thoughts I had while brainstorming and working on this project. They are meant to be food for thought, which could potentially be more thoroughly explored in future projects.
 
 ### How realistic is using optimal win rate as a benchmark?
 Instead of fixing all strategies to be optimal, you could fix it to a strategy that is considered the average of what a human would play. Might give a better, realistic idea of the skill score.
 
+Skill score isn't the only way of measuring. Evaluating a strategy theoretically or empirically through game sampling gives an objective measure of how strong that strategy is relative to no-skill and maximum skill strategies.
 
 When designing games, one can also look at the absolute values of the optimal and random win rate; perhaps there's a trend in how popular a game is and how high the base line win rate is for a no-skill player; e.g. 20% random win rate and 40% optimal win rate vs. 40% random win rate and 80% optimal win rate.
 
 Maybe using random win rate isn't the best benchmark. Perhaps one way of designing new games would be to think of some "typical" strategies that people would come up with, with not too much effort. And look at the theoretical/empirical win rates of those against an optimal player to see if that win rate is acceptable (should maybe be around 30%(?)).
 
 Random and optimal win rate might not be the most estimate for "pragmatic" reasons if the goal was to design games. But they provide a measurement of the absolute extremes in terms of the skill spectrum, which is helpful for purely theoretical analysis on the game.
-
-## Caveats
 
 ## Future Work
 
