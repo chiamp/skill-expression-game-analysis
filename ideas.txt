@@ -219,16 +219,41 @@
 
 - oprd calculation is based on the optimal strategy for the player,
 	- if it knows that the dealer's strategy is random
-
 - however aprd is around ~65%, because the player agent was trained against a dealer agent (which converged to optimal play)
 	- therefore when evaluating winrate, aprd is lower than oprd because the player agent's strategy was optimized against an optimal opponent, rather than a random opponent
 	- SOLUTION: train a separate player agent against a random dealer to get a player strategy optimized against such an opponent
 		- then aprd should converge to oprd
-
 - rpod = rpad because specifically in this game, the dealer always goes after the player
 	- therefore the dealer strategy always optimizes for the best outcome, given the game state the player steered them into
 		- a random player policy vs an optimal player policy would just choose which game states we're more likely to end up in before it's the dealer's turn to go
 		- but regardless of how we end up there, the optimal strategy for the dealer from that point forward would be the same
+
+- is the AI strategy converging to optimal strategy?
+	- is there a guarantee that the AI agent converges to optimal play?
+		- given a model with high enough predictive power and infinite time to train, yes
+	- in reality, we wouldn't know if it ever converges to optimal play, if we didn't know the theoretical optimal win rate limit ahead of time (which is impossible to calculate for complex games)
+		- so its kind of a guessing game in terms of what neural network hyperparameters and architecture to use and how long to train it for
+- is this method objective? i.e. can we objectively get a good approximation of the theoretical win rate every time for any game, given enough computational power and time?
+	- yes if we explicitly calculate the theoretical win rates
+	- for the approximation method, neural networks can converge to local optima
+		- neural network convergence theory is a little fuzzy, academia is still working on that
+		- but RL algorithms theoretically converges at the limit, given a function approximator that has enough predictive power (see previous bullet point)
+- skill score
+	- is actually a measurement of the game, denoting the maximum proportion of your win rate being attributed to skill (this is the exact mathematical definition)
+		- because the measurement is a ratio between the win rate of no-skill players and maximum skill players
+		- in a way it kind of shows how much does skill affect the outcome of the game, but this definition is a little fuzzy and abstract
+		- it basically tells you that if you play optimally in this game, what proportion of your wins can be attributed to skill
+			- may not be the most useful measurement if optimal play is impossible for humans, and human optimal play win rate is much lower (maybe even closer to random win rate that absolute theoretical optimal win rate)
+	- using random win rate as a benchmark may not be the best
+		- a human is unlikely to play a random strategy; i.e. there are moves that it won't ever consider because it goes against "human common sense"
+		- using an "average human strategy" may be a better baseline for calculating the proportion of your wins beint attributed to "above average human-level skill"
+			- however using hard-coded heuristics for "average human strategy" is dependent on the game and is inherently biased, since the strategy is derived from humans
+		- using a random strategy is unbiased and game-agnostic; i.e. can be applied to any game, and a human or machine can execute the strategy with no preparation or experience of the game whatsoever
+- skill floor skill ceiling
+	- random win rate can be used as a skill floor and optimal win rate can be used as a skill ceiling
+		- here the absolute values of the win rates matter, rather than just the ratio
+		- for measuring the optimal balance between the win rate of less-skilled players and better-skilled players, would probably use "average human strategy" as the skill floor and "optimal human strategy" as the skill ceiling
+
 
 =============================================================================================================================================================================================================================
 

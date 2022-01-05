@@ -1,3 +1,4 @@
+
 # Analyzing Skill vs Chance in Games
 This is a repo where I describe a method to measure the amount of skill expression games have.
 
@@ -23,9 +24,9 @@ A friend of mine is a board game designer and described a thesis he had to me:
 
 As a consequence, games that never allow less-skilled players to beat better-skilled players, would make casual players less inclined to play those games. On the other hand, games that allow less-skilled players to beat better-skilled players too often would give the impression to the players that their choice of actions have little to no effect on the outcome of the game; i.e. the game gives players little to no **agency**.
 
-5 days ago, my friend was pondering whether there was an objective way of quantifying this win rate balance (i.e. the chance of a less-skilled player beating a better-skilled player) for board games. If such a method existed, then one can calculate this measurement across many board games and see whether there is a trend in terms of how popular the game is compared to what the win rate balance is like. And if such a trend exists, then that could help in designing future board games that will be popular in general.
+My friend was pondering whether there was an objective way of quantifying this win rate balance (i.e. the chance of a less-skilled player beating a better-skilled player) for board games. If such a method existed, then one can calculate this measurement across many board games and see whether there is a trend in terms of how popular the game is compared to what the win rate balance is like. And if such a trend exists, then that could help in designing future board games that will be popular in general.
 
-Personally I'm a big fan of games in general, and so I found the problem very interesting and started brainstorming some ideas. After a few days of coding and a few sleepless nights, I formulated a possible solution for calculating this win rate balance measurement.
+Personally I'm a big fan of games in general, and so I found the problem very interesting and started brainstorming some ideas. After some thought, I formulated a possible solution for calculating this win rate balance measurement.
 
 ## Defining Skill
 The distinction between less-skilled players and better-skilled players is the win rate. Better-skilled players are expected to win more often than less-skilled players. 
@@ -34,9 +35,9 @@ To get a measure of how much skill matters in a game (i.e. how much does skill a
 
 A player with maximum skill will always pick the optimal action that maximizes their chance of winning the game; such a player therefore plays an **optimal strategy** and is deemed an **optimal player**.
 
-A player with no skill is a little bit harder to define. In this project, I define a player with no skill as a player that implements a **random strategy** (i.e. the player always picks random actions) and is thus deemed a **random player**.
+A player with no skill is a little bit harder to define. In this project, I define a player with no skill as a player that implements a **random strategy** (i.e. the player always picks random actions) and is thus deemed a **random player**. In the [Open Discussions](#open-discussions) section, I go over some consequences of defining a no-skill player this way.
 
-By comparing the win rates of a player with maximum skill (an optimal player ) and a player with no skill (a random player), we can measure the maximum effect that skill has in affecting the win rate in a particular game.
+By comparing the win rates of a player with maximum skill (an optimal player) and a player with no skill (a random player), we can measure the maximum effect that skill has in affecting the win rate in a particular game.
 
 ## Skill Score
 Let's first start with single-player games as an example (e.g. blackjack, solitaire, free cell etc.).
@@ -47,15 +48,15 @@ Suppose an optimal player plays a single-player game and ends up with a 60% win 
 
 where <img src="https://render.githubusercontent.com/render/math?math=s"> is the skill score, <img src="https://render.githubusercontent.com/render/math?math=w_r"> is the win rate of the random strategy and <img src="https://render.githubusercontent.com/render/math?math=w_o"> is the win rate of the optimal strategy.
 
-In this example, we can see that skill has some influence on the outcome of the game, but part of the outcome is also influenced by random chance.
+In this example, we can see that a major portion of the win rate of the optimal player can be attributed to that player's skill.
 
 Now imagine that instead of 20%, the random player achieves a 60% win rate as well. Then in this case, we can see that using a no-skill, random strategy can account for the total win rate of the optimal strategy. In other words, we can say that none of the games won by the optimal strategy can be attributed to skill. Therefore the skill score is 0.
 
 Finally, if the random player achieves a 0% win rate, then we can conclude that using a no-skill, random strategy accounts for none of the win rate of the optimal strategy. And therefore, the total optimal win rate can be attributed solely to skill. In this example, we can see that the outcome of the game is influenced solely by skill, and therefore the skill score is 1.
 
-**Intuitively, the skill score is a measurement from 0 to 1 that tells you how much skill affects the outcome of the game**. A skill score of 0 means that the outcome of the game is not determined by skill at all, whereas a skill score of 1 means that the outcome of the game is determined purely by skill. A number in-between means that the outcome of the game is determined partially by skill.
+**Intuitively, the skill score is a measurement from 0 to 1 that tells you how much skill affects the outcome of the game (i.e. skill expression)**. A skill score of 0 means that the outcome of the game is not determined by skill at all, whereas a skill score of 1 means that the outcome of the game is determined purely by skill. A number in-between means that the outcome of the game is determined partially by skill. **More precisely, the mathematical definition of the skill score for a game is the maximum proportion of a player's win rate that can be attributed to skill**. In the [Open Discussions](#open-discussions) section, I go over some more details regarding the mathematical definition of skill score.
 
-Comparing the skill scores of different games will give us an idea of which games are affected by skill more or less. If the win rate of a player with no skill (i.e. a player using the random strategy) becomes further and further away from the win rate of a player with maximum skill (i.e. a player using the optimal strategy), then intuitively the game's outcomes are more affected by skill; i.e. a higher skill score. If the win rate of a player with no skill becomes closer and closer to the win rate of a player with maximum skill, then intuitively the game's outcomes are less affected by skill; i.e. a lower skill score.
+Comparing the skill scores of different games will give us an idea of which games are more affected by skill or less affected by skill. If the win rate of a player with no skill (i.e. a player using the random strategy) becomes further and further away from the win rate of a player with maximum skill (i.e. a player using the optimal strategy), then intuitively the game's outcomes are more affected by skill; i.e. a higher skill score. If the win rate of a player with no skill becomes closer and closer to the win rate of a player with maximum skill, then intuitively the game's outcomes are less affected by skill; i.e. a lower skill score.
 
 An example of a game with a skill score of 0 is guessing a coin flip; the win rate of the random strategy is 50%, which is also the win rate of the optimal strategy.
 
@@ -253,7 +254,7 @@ It is interesting to see the skill score of the player actually go up despite th
 
 ## Conclusion
 In this project, I present a method to calculate the skill score: a measurement that describes how much skill affects the outcome of a game, for every player role in the game. The method is as follows:
-* create a virtual version of the game
+* create a virtual version of the game that can run simulations
 * if it's computationally feasible:
 	* for every player role in the game:
 		* explicitly calculate the optimal and random win rates by enumerating all possible game sequences
@@ -266,26 +267,131 @@ In this project, I present a method to calculate the skill score: a measurement 
 		* extract the approximated random win rate for the player role <img src="https://render.githubusercontent.com/render/math?math=p">
 	* use the approximations for the optimal and random win rate to get the approximated skill scores for each player role
 
-<img src="https://render.githubusercontent.com/render/math?math=
-
-
-
-
 ## Open Discussions
 In this section, I outline some ideas and thoughts I had while brainstorming and working on this project. They are meant to be food for thought, which could potentially be more thoroughly explored in future projects.
 
-### How realistic is using optimal win rate as a benchmark?
-Instead of fixing all strategies to be optimal, you could fix it to a strategy that is considered the average of what a human would play. Might give a better, realistic idea of the skill score.
+### Is this method objective? 
+Is the method outlined in the conclusion an **objective** way of calculating the skill score; i.e. can we be guaranteed to get the same skill score value every time we apply this method on the same game?
 
-Skill score isn't the only way of measuring. Evaluating a strategy theoretically or empirically through game sampling gives an objective measure of how strong that strategy is relative to no-skill and maximum skill strategies.
+We can get this guarantee if we are explicitly calculating the theoretical skill score. Provided that it's computationally feasible, explicit calculation of the theoretical skill score will always result in the same values for each player role for the same game.
 
-When designing games, one can also look at the absolute values of the optimal and random win rate; perhaps there's a trend in how popular a game is and how high the base line win rate is for a no-skill player; e.g. 20% random win rate and 40% optimal win rate vs. 40% random win rate and 80% optimal win rate.
+If we are approximating the skill score empirically, we have to look at the AI agents that learn an approximation of the optimal strategy. To guarantee that we can get the same skill score would mean that there needs to be a guarantee that the AI agents learn the optimal policy every time. In my implementation of the AI agents for this project, the agents use a neural network to approximate the value function (i.e. their strategy), and uses the reinforcement learning algorithm, Q-learning, to update its neural network.
 
-Maybe using random win rate isn't the best benchmark. Perhaps one way of designing new games would be to think of some "typical" strategies that people would come up with, with not too much effort. And look at the theoretical/empirical win rates of those against an optimal player to see if that win rate is acceptable (should maybe be around 30%(?)).
+Q-learning is theoretically proven to converge to an optimal strategy given infinite time, so long as its value function can approximate any function. A neural network can indeed theoretically approximate any function given enough computational power, but it is not always guaranteed to converge to the global optimum solution; it can converge to a local optimum solution, depending on what the initial parameters of the neural network are.
 
-Random and optimal win rate might not be the most estimate for "pragmatic" reasons if the goal was to design games. But they provide a measurement of the absolute extremes in terms of the skill spectrum, which is helpful for purely theoretical analysis on the game.
+Therefore, we may get different skill score values if we try to calculate it using the empirical method. In practice, we'd most likely have to run the algorithm multiple times and look at the resulting learned strategies. Even then, we wouldn't know for certain whether the strategy it learned is optimal (if we don't have a theoretical optimal strategy to compare it to, which is impossible to calculate for complex games).
 
-## Future Work
+### What happens when the AI agent's learned strategy is sub-optimal?
+If the AI agent's strategy is theoretically sub-optimal, then it provides a lower bound of what the skill score of the game can be; as the AI agent's strategy approaches the optimal strategy, the current skill score will approach the true theoretical value of the skill score. 
+
+If the AI agent's strategy is worst than the random strategy, then the skill score will be negative, and will approach negative infinity as the AI strategy win rate approaches zero. In practice, given enough computational power and time, the AI agent will learn a strategy that's better than the random strategy.
+
+### How useful is skill score?
+The intuitive definition of the skill score for each player role is a measurement from 0 to 1 that tells you how much skill affects the outcome of the game for that specific player role. "How much skill affects the outcome of the game" is a little abstract and not concrete.
+
+Because the skill score is a ratio between the win rate of no-skill players and maximum skill players, the mathematical definition of the skill score for a specific player role in a game is **the maximum proportion of the win rate of that player role being attributed to skill**. Essentially if you play optimally in a game, the skill score tells you what proportion of your wins can be attributed to skill.
+
+This is a useful measurement if we're interested in the theoretical strategic limits of a game. But for  more "human-centric" applications, like designing board games that'll be popular with the general public or finding a casual board game to bring to a party, using the skill score derived from the optimal and random strategies may not be as helpful. Calculating the skill score based on the best human strategies and the worst human strategies may give a better picture of the skill expression in a game, if played by humans.
+
+For example let's say in a particular single-player game, the optimal win rate is 90% and the random win rate is 30%. However the win rate for casual players is averaged to be 40% while the win rate for professional players is averaged to be 60%. Using the win rates of casual players and professional players would give us a skill score of 2/3rds which may be a more realistic measure of the maximum proportion of the win rate of human players that can be attributed to above-average (better than casual) skill.
+
+The optimal and random strategies are strategies that are at the limit of the spectrum in terms of skill. But for most games, the strategy of the least-skilled human players will most likely be better than the random strategy, and the strategy of the best-skilled human players will be worse than the optimal strategy.
+
+Practically speaking, a no-skill human player would still have human "common sense" despite having 0 experience in a game before, and thus would never make purely detrimental moves that have no benefit whatsoever. In our example of blackjack, any human playing this game would have the "common sense" to never hit if their hand has a sum of 8; yet the random strategy will hit 50% of the time in this situation. One could argue that employing a random strategy with the exception of always staying if the sum of your hand is 8, is by human standards, a no-skill strategy; the 8-sum condition is a result of logically reasoning with the rules of the game, and not some advanced theory. This no-skill "human" strategy performs objectively better than the random strategy, and may be a better representation of what the win rate of a no-skill player is for this game, if it's played by humans.
+
+On the flip side, human players will never be able to implement optimal strategies for complex games like chess and Go. Therefore it makes more sense to use the strategy of the best professional human player in the world to calculate the optimal win rate of the maximum-skill player for this game, if it's played by humans.
+
+This "human-centric" skill score would then be defined as follows:
+
+<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_h}{w_H}">
+
+where <img src="https://render.githubusercontent.com/render/math?math=w_h"> is the win rate of a no-skill human player, and <img src="https://render.githubusercontent.com/render/math?math=w_H"> is the win rate of a maximum-skill human player.
+
+To get the win rates, we would need to get the strategies of a no-skill human player and maximum-skill human player. This could be hard or impossible to quantify; you would either have to show the player all possible game sequences and ask what actions they would take for each situation, or approximate their strategy using a heuristic (which may not be 100% accurate). Mathematically, this "human-centric" skill score is **the maximum proportion of the win rate of that player role being attributed to skill, if the game is played by humans**.
+
+For most games, defining what a no-skill human strategy and maximum-skill human strategy is biased. Unless there's a global system that gives an objective ranking to all players of the game, it's not possible to objectively define a no-skill human strategy and maximum-skill human strategy. Even if there was such a system, humans could improve their strategy in the game over time, and therefore the baselines for a no-skill human strategy and maximum-skill human strategy are not static and will also move over time. Therefore calculating the "human-centric" skill score is not objective.
+
+Depending on the application, using an average-skill human strategy may be worth exploring as a baseline for calculating skill score, replacing either the no-skill human strategy or the maximum-skill human strategy.
+
+The advantage of using a random strategy as a baseline is that it's unbiased and game-agnostic; i.e. it can be applied to any game, and a human or machine can execute the strategy with no preparation or experience of the game whatsoever.
+
+### Skill Floor and Skill Ceiling
+Besides skill score, the optimal win rate and random win rate can also be useful measures when looking at aspects of a game. In a way, the random win rate describes the **skill floor** of a game (i.e. the win rate you can expect to get with no skill) and the optimal win rate describes the **skill ceiling** of a game (i.e. the win rate you can expect to get if you have maximum skill).
+
+Whereas skill score describes a ratio of the proportion of wins that can be attributed to skill, the absolute values of the optimal and random win rate describe how often maximum and no-skill players are winning in the game. These two factors could also be useful when designing board games or choosing what games to play; for example, comparing two games that have the same skill score, but the optimal and random win rate is 80% and 40% for one game, and 40% and 20% for the other game, respectively.
+
+If we wanted a more "human-centric" view, we can instead look at the win rates of no-skill human strategies, average-skill human strategies and maximum-skill human strategies (as mentioned in the previous section).
+
+### Evaluating Game Attributes
+To summarize, here are a list of attributes of a game that are traditionally considered, plus the metrics I mentioned in this project:
+* game time
+* minimum number of players
+* maximum number of players
+* price
+* theme
+* ratings and reviews
+* age suggestion
+* average number of possible actions available each turn (**game breadth**)
+* average number of turns before the game is over (**game depth**)
+* skill score
+* skill floor
+* skill ceiling
+
+With data on these attributes of many games, one can do many things, including but not limited to:
+* deciding what game to play by looking at the game attributes
+* looking at trends of popular games and their game attributes, to decide how to design a new game
+	* one could train models to predict if a game will be popular, given the game attributes
+* finding games that are similar to the games you like based on their game attributes
+	* can calculate this mathematically by finding games that are closest in "distance" in terms of game attributes
+	* can also plot a visualization of the board games to see where they are in the game attribute space
+
+Data for game attributes of games exist on online databases, but the addition of skill score, skill floor and skill ceiling will give even more information to work with for game designers, and game lovers in general.
+
+### Is it fair to assume that a no-skill player is equivalent to a random player?
+There are technically strategies that perform worst than a random strategy; in the blackjack game for example, a strategy of always hitting would result in always busting and losing. As such, if we assume that a no-skill player implements a random strategy, then that would imply that a player that implements the always-hit strategy would have negative skill. 
+
+Intuitively this doesn't make much sense, but we have to draw the line somewhere as to what no-skill strategies are. At the most extreme case, we could assign a no-skill strategy as a strategy that gives the lowest possible theoretical win rate in the game (whether that's 0% or something else). The reason I chose a random strategy instead, is because I argue that it doesn't take any skill at all to implement a random strategy; whether you're a human just rolling a dice to determine what action to take or you use a random number generator to make moves for you, you don't need any prior experience or knowledge of the game you're playing, so it's trivial to implement a random strategy (like I previously mentioned, the random strategy is game-agnostic, so there's no preparation required to use it).
+
+### Draws
+With games that allow draws, skill score is still relevant as long as the optimal win rate for player roles are not 0%. In the case that they are 0% win rate, we can calculate the skill score using the draw rate instead, assuming that the optimal draw rate is not 0%. The skill score would be calculated as follows:
+
+<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{d_r}{d_o}">
+
+where <img src="https://render.githubusercontent.com/render/math?math=d_r"> is the draw rate of a random player, and <img src="https://render.githubusercontent.com/render/math?math=d_o"> is the draw rate rate of an optimal player.
+
+What if the random win rate and optimal win rate are equal but the optimal draw rate is higher than the random draw rate? Perhaps and argument can be made to use the optimal and random draw rates when calculating skill score in this case as well.
+
+### Non-zero sum games and utility / rewards
+In zero-sum games, there are clear winners and losers (or a draw situation where no player wins or loses). In non-zero sum games, there could be game outcomes where there's no winner or loser in the binary sense, but just a measurement on how many points or money you earn by the end of the game. For example, in the [battle of the sexes](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory)), the game outcomes are determined by how preferable the outcome was to each player (in the form of reward points).
+
+The skill score can account for games like these. Rather than calculating the win rates of the optimal and random strategy, we calculate the **utility** or **reward** received if a player uses the optimal or random strategy. The skill score can then be calculated as such:
+
+<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{R_r}{R_o}">
+
+where <img src="https://render.githubusercontent.com/render/math?math=R_r"> is the average reward received for a random player, and <img src="https://render.githubusercontent.com/render/math?math=R_o"> is the average reward received for an optimal player.
+
+The skill score can then be interpreted as **the maximum proportion of the reward received by a particular player role that can be attributed to skill**. The reward rate for the random player and optimal player can be used as skill floor and skill ceiling measures like before, except now they're in terms of reward received, rather than win rate.
+
+***---FIX WITH BETTER EXAMPLE---***
+We could also quantify what the reward received means by tying it to real game outcomes; e.g. if the an optimal player playing the man role receives 1 reward on average, then that is equivalent to as if the man went to see the prize fight and the woman went to go see the ballet performance separately.
+
+Reward / utility values have to be at least 0 in order for skill score calculation to work. If they're not, then the utiliy / reward values need to be pre-processed so that they are non-negative, before calculating skill score.
+
+### Deterministic vs. Stochastic Games
+At optimal play, deterministic games tend towards 100% or 0% win / loss rate, or 50% draw rate (in zero-sum games that allow for draws) for player roles, trivially. However to find out what that actual win rate value is, we would still need to calculate that explicitly, or train AI agents to approximate that value. We would also still have to do the same to calculate or approximate the random win rate for each player role.
+
+Only stochastic games can have win rates that are not 100% or 0%.
+
+### Measuring Action Importance
+Another way of framing the problem of measuring skill, is asking thee question: how much does your choice of actions affect your win rate on average?
+
+If we have access to the optimal strategy, we could calculate the difference between the probability of winning if we take the optimal action, versus the average probability of winning if we randomly sample an action for every game state, to see how important is it on average to pick the optimal action; i.e. how much does your choice of action affect the outcome of the game. We would then weight each difference by the probability of reaching that particular game state. The average difference value can be interpreted as a difference in probability of winning if we choose the optimal action versus sampling a random action. If we were using utility / reward, then it can be interpreted as a difference in utility / reward received if we choose the optimal action versus sampling a random action.
+
+If we don't have an optimal strategy, we can train an AI to approximate it and then sample games using that strategy. We can also try different strategies as well, particularly human strategies if we're more interested in a "human-centric" measure of action importance.
+
+One caveat that I haven't quite worked out yet, is that the win probability / utility / reward values associated for each action for the **same given game state** is different depending on what strategy you're using; i.e. your probability of winning if you pick a certain action for a given game state if you're using an optimal strategy could be different than if you were using a random strategy, as the values are calculated assuming you continue using that specific strategy for the rest of the game.
+
+We can also look at the distribution of differences rather than just the mean of them. If they are widely distributed, then there are some states where action selection is very important and some that aren't, whereas if the distribution of differences is narrow, then most states don't have very important action selection.
 
 ## File Descriptions
 * `one_player_blackjack / two_player_blackjack`: there are identical files in the `one_player_blackjack` and `two_player_blackjack` directory. Their functions are primarily the same except applied to the one-player blackjack game and the two-player blackjack game respectively:
@@ -293,7 +399,7 @@ Random and optimal win rate might not be the most estimate for "pragmatic" reaso
 	* `agent.py` holds the RLAgent class, that learns an optimal strategy using reinforcement learning (the learning algorithm is specifically Q-learning)
 	* `win_probability_analysis.py` holds functions that calculate the theoretical win rates using optimal, random and AI strategies
 	* `train.py` holds the training function to train AI agents to learn an optimal strategy
-	* `main.py` runs the entire training procedure for the AI agents and compares the win rates of their learned strategies with the theoretical win rates of the optimal and random strategies
+	* `main.py` is the main file to run; it runs the entire training procedure for the AI agents and compares the win rates of their learned strategies with the theoretical win rates of the optimal and random strategies
 	* `results.txt` contains the results of the AI strategy win rates and the theoretical win rates of the optimal and random strategies
 * `requirements.txt` holds all required dependencies, which can be installed by typing `pip install -r requirements.txt` in the command line
 * `ideas.txt` holds my (slightly unorganized) ideas that I've brainstormed throughout working on this project, in roughly the order that I came up with them; there are many ideas in there that I explored hypothetically but never implemented
@@ -301,4 +407,18 @@ Random and optimal win rate might not be the most estimate for "pragmatic" reaso
 For this project, I'm using Python 3.7.11.
 
 ## Additional Resources
-* [A paper detailing an alternative approach to measuring skill in games](https://www.uni-trier.de/fileadmin/fb4/prof/BWL/FIN/Veranstaltungen/duersch--Skill_and_chance_2018-03-07.pdf)
+[A paper detailing an alternative approach to measuring skill in games](https://www.uni-trier.de/fileadmin/fb4/prof/BWL/FIN/Veranstaltungen/duersch--Skill_and_chance_2018-03-07.pdf)
+
+In this study, researchers applied an elo rating system to match data for different games. Each unique player in the match data was given an elo rating such that the match results for every player made the most sense. The distribution of the elo ratings were then analyzed, with the thesis that games with wider distribution of elo ratings amongst players imply that the game is largely a game of skill, and games with a narrower distribution of elo ratings amongst plays imply that the game is largely a game of chance.
+
+This method is useful if you have lots of match data for the games you want to analyze. However the match data is produced from humans, and therefore human-level play. It could very well be that a game has a theoretical level of skill that's beyond the limit of humans, and if such a player existed in the match data, the elo ratings could be more dispersed (i.e. the human elo ratings are all close together in distribution, but that's due to their lack of skill, rather than the game itself being a game of chance).
+
+However, for the purposes of that paper, using human data is relevant since they want to classify whether games should be considered games of chance or skill, in the eyes of the law, particularly deciding on whether poker should be considered a game of chance or skill; this would have heavy implications for gambling laws, which affect humans.
+
+But if one wanted to investigate the theoretical limits of the game, we can train AI's to learn optimal strategies as well as implement different human strategy heuristics to see if the dispersion of elo ratings for a particular game is indeed represented by the human data.
+
+The paper requires that the players in the match data are of non-uniform skill level and that the matchups are also non-uniform in skill level (i.e. better-skilled players have the chance of playing less-skilled players).
+
+The advantage of this method is that you don't need to code the game / have access to a virtual simulator and don't need to know the optimal policy. The advantage of my method is that you don't need data. You could also generate data using AI agents and human strategies.
+
+You could code AI bots with different strategies to generate data, but there's no guarantee that the strategies of the AI are representative of the true theoretical strategy distribution of the game; we're introducing human bias as well. My metric is unbiased in the theoretical sense.
