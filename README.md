@@ -182,7 +182,7 @@ The player and dealer are dealt the same amount of cards as before, the player g
 
 ### Experiment procedure
 We want to calculate the skill scores for both the player and dealer role, which means we need their corresponding optimal and random win rates. These can be obtained with the following 3 experiments:
-* train an AI player agent to play against an AI dealer agent, where both AI agent's learn to approximate the optimal strategy for its role
+* train an AI player agent to play against an AI dealer agent, where both AI agents learn to approximate the optimal strategy for its role
 * train an AI player agent to play against a random dealer, where the AI player agent learns to approximate the optimal strategy for its role
 * train an AI dealer agent to play against a random player, where the AI dealer agent learns to approximate the optimal strategy for its role
 
