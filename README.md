@@ -281,7 +281,7 @@ Therefore, we may get different skill score values if we try to calculate it usi
 ### What happens when the AI agent's learned strategy is sub-optimal?
 If the AI agent's strategy is theoretically sub-optimal, then it provides a lower bound of what the skill score of the game can be; as the AI agent's strategy approaches the optimal strategy, the current skill score will approach the true theoretical value of the skill score. 
 
-If the AI agent's strategy is worst than the random strategy, then the skill score will be negative, and will approach negative infinity as the AI strategy win rate approaches zero. In practice, given enough computational power and time, the AI agent will learn a strategy that's better than the random strategy.
+If the AI agent's strategy is worse than the random strategy, then the skill score will be negative, and will approach negative infinity as the AI strategy win rate approaches zero. In practice, given enough computational power and time, the AI agent will learn a strategy that's better than the random strategy.
 
 ### How useful is skill score?
 The intuitive definition of the skill score for each player role is a measurement from 0 to 1 that tells you how much skill affects the outcome of the game for that specific player role. "How much skill affects the outcome of the game" is a little abstract and not concrete.
@@ -343,7 +343,7 @@ With data on these attributes of many games, one can do many things, including b
 Data on game attributes of games exist on online databases (e.g. [Board Game Geek](https://boardgamegeek.com/)), but the addition of skill score, skill floor and skill ceiling will give even more information to work with for game designers and game lovers in general.
 
 ### Is it fair to assume that a no-skill player is equivalent to a random player?
-There are technically strategies that perform worst than a random strategy; in the blackjack game for example, a strategy of always hitting would result in always busting and losing. As such, if we assume that a no-skill player implements a random strategy, then that would imply that a player that implements the always-hit strategy would have negative skill. 
+There are technically strategies that perform worse than a random strategy; in the blackjack game for example, a strategy of always hitting would result in always busting and losing. As such, if we assume that a no-skill player implements a random strategy, then that would imply that a player that implements the always-hit strategy would have negative skill. 
 
 Intuitively this doesn't make much sense, but we have to draw the line somewhere as to what no-skill strategies are. At the most extreme case, we could assign a no-skill strategy as a strategy that gives the lowest possible theoretical win rate in the game (whether that's 0% or something else). The reason I chose a random strategy instead, is because I argue that it doesn't take any skill at all to implement a random strategy; whether you're a human just rolling a dice to determine what action to take or you use a random number generator to make moves for you, you don't need any prior experience or knowledge of the game you're playing, so it's trivial and takes no skill to implement a random strategy. 
 
