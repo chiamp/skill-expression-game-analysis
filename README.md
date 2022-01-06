@@ -311,7 +311,7 @@ For most games, defining what a no-skill human strategy and maximum-skill human 
 Depending on the application, using an average-skill human strategy may be worth exploring as a baseline for calculating skill score, replacing either the no-skill human strategy or the maximum-skill human strategy. What determines an "average-skill human", would depend on the context of the application.
 
 ### Skill Floor and Skill Ceiling
-Besides skill score, the optimal win rate and random win rate can also be useful measures when looking at aspects of a game. In a way, the random win rate describes the **skill floor** of a game (i.e. the win rate you can expect to get with no skill) and the optimal win rate describes the **skill ceiling** of a game (i.e. the win rate you can expect to get if you have maximum skill).
+Besides skill score, the optimal win rate and random win rate can also be useful measures when analyzing the theoretical skill level of a game. In a way, the random win rate describes the **skill floor** of a game (i.e. the win rate you can expect to get with no skill) and the optimal win rate describes the **skill ceiling** of a game (i.e. the win rate you can expect to get if you have maximum skill).
 
 Whereas skill score describes a ratio of the proportion of wins that can be attributed to skill, the absolute values of the optimal and random win rate describe how often maximum and no-skill players are winning in the game. These two factors could also be useful when designing board games or choosing what games to play; for example, comparing two games that have the same skill score, but the optimal and random win rate is 80% and 40% for one game, and 40% and 20% for the other game, respectively.
 
