@@ -337,8 +337,8 @@ With data on these attributes of many games, one can do many things, including b
 * looking at trends of popular games and their game attributes, to decide how to design a new game
 	* one could train models to predict if a game will be popular, given the game attributes
 * finding games that are similar to the games you like based on their game attributes
-	* can calculate this mathematically by finding games that are closest in "distance" in terms of game attributes
-	* can also plot a visualization of the board games to see where they are in the game attribute space
+	* one could calculate this mathematically by finding games that are closest in "distance" in terms of game attributes
+	* one could also plot a visualization of the board games to see where they are in the game attribute space
 
 Data on game attributes of games exist on online databases (e.g. [Board Game Geek](https://boardgamegeek.com/)), but the addition of skill score, skill floor and skill ceiling will give even more information to work with for game designers and game lovers in general.
 
