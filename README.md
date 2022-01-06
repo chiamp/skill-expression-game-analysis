@@ -376,7 +376,7 @@ We could also quantify what the reward received means by tying it to real game o
 Reward values have to be at least 0 in order for skill score calculation to work. If they're not, then the reward values need to be pre-processed so that they are non-negative, before calculating skill score.
 
 ### Multiple Nash Equilibria
-For games that have multiple Nash equilibria, i.e. player roles can have different optimal strategies depending on what strategies are used by all other players, then a skill score can be calculated for each player role, for each Nash equilibrium. For "human-centric" applications, one would probably have to look at how likely each Nash equilibrium would occur, which means finding out how likely a human would use the strategies for each Nash equilbrium.
+For games that have multiple Nash equilibria (i.e. player roles can have different optimal strategies depending on what strategies are used by all other players), then a skill score can be calculated for each player role, for each Nash equilibrium. For "human-centric" applications, one would probably have to look at how likely each Nash equilibrium would occur, which means finding out how likely a human would use the strategies for each Nash equilbrium.
 
 ### Deterministic vs. Stochastic Games
 At optimal play, deterministic games tend towards either a win, draw or loss rate of 100% for each player role, trivially. However to find out what that actual win rate value is, we would still need to calculate that explicitly, or train AI agents to approximate that value. We would also still have to do the same to calculate or approximate the random win rate for each player role.
