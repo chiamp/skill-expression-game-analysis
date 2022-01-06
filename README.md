@@ -418,7 +418,7 @@ Some comparisons can be made between the method outlined in this paper and my me
 It's also possible to generate match data for games if it doesn't exist. We could create agents that implement different strategies (e.g. learned optimal, human and random strategies) and have them play against each other. We can then use the method outlined in the paper to assign each agent an Elo rating and look at the rating distribution. Assuming that the optimal strategy was learned by one of the AI agents and assuming the random strategy is a strategy implemented by a no-skill player, we would find the true rating distribution of the game and would get a true approximation of the measurement of skill and chance for the game.
 
 ## File Descriptions
-* `one_player_blackjack / two_player_blackjack`: there are identical files in the `one_player_blackjack` and `two_player_blackjack` directory. Their functions are primarily the same except applied to the one-player blackjack game and the two-player blackjack game respectively:
+* `one_player_blackjack / two_player_blackjack`: there are identical Python files in the `one_player_blackjack` and `two_player_blackjack` directory. Their functions are primarily the same except applied to the one-player blackjack game and the two-player blackjack game respectively:
 	* `blackjack.py` holds the BlackJack class, that facilitates the blackjack game
 	* `agent.py` holds the RLAgent class, that learns an optimal strategy using reinforcement learning (the learning algorithm is specifically Q-learning)
 	* `win_probability_analysis.py` holds functions that calculate the theoretical win rates using optimal, random and AI strategies
