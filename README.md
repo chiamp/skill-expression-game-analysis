@@ -363,7 +363,7 @@ What if the optimal win rate and random win rate are equal but the optimal draw 
 ### Non-zero sum games and utility / rewards
 In zero-sum games, there are clear winners and losers (or a draw situation where no player wins or loses). In non-zero sum games, there could be game outcomes where there's no winner or loser in the binary sense, but just a measurement on how many points or money you earn by the end of the game. For example, in the [battle of the sexes (2)](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory)), the game outcomes are determined by how preferable the outcome was to each player (in the form of reward points).
 
-The skill score can account for games like these. Rather than calculating the win rates of the optimal and random strategy, we calculate the **reward** received if a player uses the optimal or random strategy. The skill score can then be calculated as such:
+The skill score can account for games like these. Rather than calculating the win rates of the optimal and random strategy, we calculate the **reward received** if a player uses the optimal or random strategy. The skill score can then be calculated as such:
 
 <img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{R_r}{R_o}">
 
