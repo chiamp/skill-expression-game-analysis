@@ -409,7 +409,7 @@ Some comparisons can be made between the method outlined in this paper and my me
 	* there must be matchups that are non-uniform in skill level (i.e. better-skilled players have the chance of playing less-skilled players).
 * my method's pre-requisite is that you need access to a virtual version of the game that can run simulations
 * the paper's method is biased toward the match data
-	* e.g. if the match data was generated from humans, then the measurement of skill and chance in the game is only relevant if humans play the game 
+	* e.g. if the match data was generated from humans, then the measurement of skill and chance in the game are relevant if we are only considering humans playing the game 
 		* if human-level play does not cover the full spectrum of skill for this game, then this may not be a representative of the true theoretical measurement of skill and chance for that game
 * my method is not biased as it's not based on human strategies
 	* if it's possible to explicitly calculate the win rates, then we can get the true theoretical skill score
