@@ -394,7 +394,7 @@ One caveat that I haven't quite worked out yet, is that the win probability / re
 
 We can also look at the distribution of differences rather than just the average. If they are widely distributed, then there are some states where action selection is very important and some that aren't, whereas if the distribution of differences is narrow, then most states don't have very important action selection.
 
-### Alternative approaches
+### Alternative Approaches
 I found a [paper written by Duersch, Lambrecht and Oechssler](https://www.uni-trier.de/fileadmin/fb4/prof/BWL/FIN/Veranstaltungen/duersch--Skill_and_chance_2018-03-07.pdf), that details a method to quantify whether a game is primarily skill-based or chance-based.
 
 In this study, researchers applied an Elo rating system to match data for different games. Each unique player in the match data was given an Elo rating such that the match results for every player made the most sense. The distribution of the Elo ratings were then analyzed, with the thesis that games with wider distribution of Elo ratings amongst players imply that the game is largely a game of skill, and games with a narrower distribution of Elo ratings amongst plays imply that the game is largely a game of chance.
@@ -416,6 +416,9 @@ Some comparisons can be made between the method outlined in this paper and my me
 	* if it's not possible, then we can only get an empirical approximation of the skill score, and there's no guarantee that we'll get the same answer every time
 
 It's also possible to generate match data for games if it doesn't exist. We could create agents that implement different strategies (e.g. learned optimal, human and random strategies) and have them play against each other. We can then use the method outlined in the paper to assign each agent an Elo rating and look at the rating distribution. Assuming that the optimal strategy was learned by one of the AI agents and assuming the random strategy is a strategy implemented by a no-skill player, we would find the true rating distribution of the game and would get a true approximation of the measurement of skill and chance for the game.
+
+### Reddit Discussion
+I made a post about this project on Reddit to get feedback and comments. Check out the discussions [here](https://www.reddit.com/r/boardgames/comments/rx544d/analyzing_skill_expression_in_games_with_the_help/)!
 
 ## File Descriptions
 * `one_player_blackjack / two_player_blackjack`: there are identical Python files in the `one_player_blackjack` and `two_player_blackjack` directory. Their functions are primarily the same except applied to the one-player blackjack game and the two-player blackjack game respectively:
