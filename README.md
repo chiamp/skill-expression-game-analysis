@@ -41,9 +41,9 @@ Let's first start with single-player games as an example (e.g. blackjack, solita
 
 Suppose an optimal player plays a single-player game and ends up with a 60% win rate, averaged over trillions of games. Now suppose a random player plays the same single-player game where it only picks random actions and ends up with a 20% win rate. Therefore in this specific example, we see that using a no-skill, random strategy can account for up to a third of the win rate of the optimal strategy. On the flip side, we can say that the remaining two-thirds of the optimal win rate can indeed be attributed to skill. I call this two-thirds value, the **skill score**:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_r}{w_o}">
+$s = 1 - \frac{w_r}{w_o}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=s"> is the skill score, <img src="https://render.githubusercontent.com/render/math?math=w_r"> is the win rate of the random strategy and <img src="https://render.githubusercontent.com/render/math?math=w_o"> is the win rate of the optimal strategy.
+where $s$ is the skill score, $w_r$ is the win rate of the random strategy and $w_o$ is the win rate of the optimal strategy.
 
 In this example, we can see that a major portion of the win rate of the optimal player can be attributed to that player's skill.
 
@@ -60,7 +60,7 @@ An example of a game with a skill score of 0 is guessing a coin flip; the win ra
 Note: the win rate of an optimal player will always be at least equal to the win rate of the random player (in the case where the win rates are equal, that would imply that the optimal strategy for the game is the random strategy)
 
 ## Explicitly Calculating Skill Score
-To calculate the skill score of a game, we need the win rate of the random strategy (<img src="https://render.githubusercontent.com/render/math?math=w_r">) and the win rate of the optimal strategy (<img src="https://render.githubusercontent.com/render/math?math=w_o">).
+To calculate the skill score of a game, we need the win rate of the random strategy ($w_r$) and the win rate of the optimal strategy ($w_o$).
 
 ### Calculating the Random Win Rate
 We can calculate the win rate of the random strategy **for a given game state** by:
@@ -77,21 +77,21 @@ We can then calculate the win rate of the random strategy **for the entire game*
 * considering all possible initial game states the game can start in
 * calculating the win rate of the random strategy for each possible initial game state (using the above algorithm)
 * for the calculated win rate of each initial state, multiply by the probability of starting in the corresponding initial state
-* add all of the win rate probabilities together to get the total probability of winning the game using the random strategy (<img src="https://render.githubusercontent.com/render/math?math=w_r">)
+* add all of the win rate probabilities together to get the total probability of winning the game using the random strategy ($w_r$)
 
 ### Calculating the Optimal Win Rate
 Assuming we don't know what the optimal strategy is, how can we calculate the optimal win rate of a game? We can first calculate the optimal win rate for a given game state, by using the same algorithm used for calculating the random win rate for a given state, with some slight alterations. 
 
-The difference is that when we are calculating the probability of getting to each particular terminal game state that resulted in a win, we don't multiply the probabilities of choosing the specific actions like we did for the random strategy. Given <img src="https://render.githubusercontent.com/render/math?math=n"> choices for actions, the random strategy will pick to do each action <img src="https://render.githubusercontent.com/render/math?math=\frac{1}{n}"> of the time, whereas the optimal strategy will always pick to do the same optimal action 100% of the time. Thus to get the probability of getting to each particular terminal game state that resulted in a win, we simply multiply the probabilities of getting to the resulting intermediate game states that eventually lead to the terminal game state.
+The difference is that when we are calculating the probability of getting to each particular terminal game state that resulted in a win, we don't multiply the probabilities of choosing the specific actions like we did for the random strategy. Given $n$ choices for actions, the random strategy will pick to do each action $\frac{1}{n}$ of the time, whereas the optimal strategy will always pick to do the same optimal action 100% of the time. Thus to get the probability of getting to each particular terminal game state that resulted in a win, we simply multiply the probabilities of getting to the resulting intermediate game states that eventually lead to the terminal game state.
 
 Now given the probabilities of reaching each terminal game state that resulted in a win, we simply take the path that has the highest probability of resulting in a win. This maximum probability is the total probability of winning the game using the optimal strategy from the given game state.
 
-Once we can calculate the optimal win rate for a given state, we can use the second algorithm described above to calculate the optimal win rates for each initial state, multiply them by the probability of each corresponding initial state occurring, and then add them together to get the total probability of winning the game using an optimal strategy (<img src="https://render.githubusercontent.com/render/math?math=w_o">).
+Once we can calculate the optimal win rate for a given state, we can use the second algorithm described above to calculate the optimal win rates for each initial state, multiply them by the probability of each corresponding initial state occurring, and then add them together to get the total probability of winning the game using an optimal strategy ($w_o$).
 
 ### Calculating Skill Score
-Once we have both the random win rate (<img src="https://render.githubusercontent.com/render/math?math=w_r">) and optimal win rate (<img src="https://render.githubusercontent.com/render/math?math=w_o">), we can calculate the skill score of the game:
+Once we have both the random win rate ($w_r$) and optimal win rate ($w_o$), we can calculate the skill score of the game:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_r}{w_o}">
+$s = 1 - \frac{w_r}{w_o}$
 
 ## Approximating Skill Score
 Explicitly calculating the skill score is a computationally expensive procedure, as it involves enumerating all possible game sequences. For more complex games like chess (with 10<sup>43</sup> possible board positions) and Go (with 10<sup>170</sup> possible board positions, which is more than the number of atoms in the universe), this method becomes infeasible.
@@ -102,9 +102,9 @@ We'd like to do  a similar approximation to get the optimal win rate, but what i
 
 We can then calculate an approximation to the skill score as such:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_r}{w_o} \approx 1 - \frac{\widetilde{w_r}}{\widetilde{w_a}}">
+$s = 1 - \frac{w_r}{w_o} \approx 1 - \frac{\widetilde{w_r}}{\widetilde{w_a}}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=\widetilde{w_r}"> is an approximation of the random win rate obtained by playing many games using the random strategy, and <img src="https://render.githubusercontent.com/render/math?math=\widetilde{w_a}"> is an approximation of the optimal win rate obtained by playing many games using the AI agent's learned strategy.
+where $\widetilde{w_r}$ is an approximation of the random win rate obtained by playing many games using the random strategy, and $\widetilde{w_a}$ is an approximation of the optimal win rate obtained by playing many games using the AI agent's learned strategy.
 
 ## Single-Player Blackjack
 
@@ -136,7 +136,7 @@ The theoretical random win rate is 18.899% and is denoted by the red dotted line
 
 Given the theoretical random and optimal win rate, we can then calculate the theoretical skill score:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_r}{w_o} = 1 - \frac{0.18899}{0.42381} = 0.55407">
+$s = 1 - \frac{w_r}{w_o} = 1 - \frac{0.18899}{0.42381} = 0.55407$
 
 The theoretical win rate of the AI agent's strategy was calculated using an [algorithm](#explicitly-calculating-skill-score) similar to the one mentioned previously; we evaluate the AI agent's current strategy on all possible game states and calculate what its win rate is. These values are denoted by the blue line.
 
@@ -146,7 +146,7 @@ After 5000 games of training, we evaluate the win rate of the AI agent's current
 
 Therefore given the empirical approximation of the random and optimal win rate, we can then calculate the approximation of the skill score:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_r}{w_o} \approx 1 - \frac{\widetilde{w_r}}{\widetilde{w_a}} = 1 - \frac{0.183}{0.4084} = 0.55191">
+$s = 1 - \frac{w_r}{w_o} \approx 1 - \frac{\widetilde{w_r}}{\widetilde{w_a}} = 1 - \frac{0.183}{0.4084} = 0.55191$
 
 Therefore using the empirical win rate of the AI agent's learned strategy to approximate the theoretical optimal win rate, and using the empirical win rate of the random strategy to approximate the theoretical random win rate, gives us a good approximation of the skill score.
 
@@ -157,19 +157,19 @@ Let's think about how we would go about calculating skill score for a multi-play
 * As a consequence, are the win rates for all of the player roles the same or different?
 * How do you calculate the optimal and random win rate in a multi-player game?
 
-It is clear that if there are different types of player roles in a game (i.e. not all player roles can do the same actions, have access to the same resources, have the same winning conditions, etc.), then it's possible for different player roles to have different chances of winning the game. To make this distinction, **there therefore must be a separate optimal and random win rate associated for each player role**. Thus for every player role <img src="https://render.githubusercontent.com/render/math?math=p">  in a game, there is a corresponding skill score defined as:
+It is clear that if there are different types of player roles in a game (i.e. not all player roles can do the same actions, have access to the same resources, have the same winning conditions, etc.), then it's possible for different player roles to have different chances of winning the game. To make this distinction, **there therefore must be a separate optimal and random win rate associated for each player role**. Thus for every player role $p$  in a game, there is a corresponding skill score defined as:
 
-<img src="https://render.githubusercontent.com/render/math?math=s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}}">
+$s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=w_r^{(p)}"> is the random win rate and <img src="https://render.githubusercontent.com/render/math?math=w_o^{(p)}"> is the optimal win rate of the player role <img src="https://render.githubusercontent.com/render/math?math=p">.
+where $w_r^{(p)}$ is the random win rate and $w_o^{(p)}$ is the optimal win rate of the player role $p$.
 
-How do we calculate the optimal and random win rate of a specific player role <img src="https://render.githubusercontent.com/render/math?math=p">? Given a fixed strategy for this specific player role, the win rate would change depending on what strategies are implemented by all the other player roles.
+How do we calculate the optimal and random win rate of a specific player role $p$? Given a fixed strategy for this specific player role, the win rate would change depending on what strategies are implemented by all the other player roles.
 
 Imagine in a two-player game where the first player implements a random strategy while the second player implements both an optimal and random strategy and achieves a win rate of 90% and 30% respectively. Using our definition of the skill score, two-thirds of the win rate of the second player can be attributed to skill. But in reality, the second player played against a sub-optimal player, so how much of that two-thirds is really due to the second player's skill, rather than the first player's lack of skill? The answer is not quite clear.
 
 Now let's imagine that the first player also implements an optimal strategy, and the optimal and random win rate of the second player against the optimal first player is now 60% and 20% respectively. Using our definition of the skill score, two-thirds of the win rate of the second player can be attributed to skill. Because the first player is an optimal player, they therefore have maximum skill. Therefore the two-thirds is indeed really due to the second player's skill, since the first player is not lacking in skill.
 
-Therefore in order to quantify the optimal and random win rate for a player role  <img src="https://render.githubusercontent.com/render/math?math=p">, we fix all other player roles to implement optimal strategies, such that they are all players of maximum skill. Then calculating the skill score of the player role  <img src="https://render.githubusercontent.com/render/math?math=p"> would indeed give us the proportion of that player's win rate that we can attribute to specifically that player's skill.
+Therefore in order to quantify the optimal and random win rate for a player role  $p$, we fix all other player roles to implement optimal strategies, such that they are all players of maximum skill. Then calculating the skill score of the player role  $p$ would indeed give us the proportion of that player's win rate that we can attribute to specifically that player's skill.
 
 Generalizing to multi-player games, the skill score for each player role can then be defined as a measurement from 0 to 1 that tells you how much skill affects the outcome of the game **for that specific player role**.
 
@@ -214,11 +214,11 @@ In the player win rate graph:
 
 Therefore the theoretical skill score for the player role is:
 
-<img src="https://render.githubusercontent.com/render/math?math=s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} = 1 - \frac{0.10327}{0.30079} = 0.65667">
+$s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} = 1 - \frac{0.10327}{0.30079} = 0.65667$
 
 And the empirical skill score for the player role is:
 
-<img src="https://render.githubusercontent.com/render/math?math=s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} \approx 1 - \frac{\widetilde{w}_r^{(p)}}{\widetilde{w}_a^{(p)}} = 1 - \frac{0.1036}{0.2957} = 0.6496">
+$s^{(p)} = 1 - \frac{w_r^{(p)}}{w_o^{(p)}} \approx 1 - \frac{\widetilde{w}_r^{(p)}}{\widetilde{w}_a^{(p)}} = 1 - \frac{0.1036}{0.2957} = 0.6496$
 
 In the dealer win rate graph:
 * The theoretical win rate of the optimal dealer strategy (against the optimal player strategy) is 69.921% and is denoted by the green dotted line (opod)
@@ -232,11 +232,11 @@ In the dealer win rate graph:
 
 Therefore the theoretical skill score for the dealer role is:
 
-<img src="https://render.githubusercontent.com/render/math?math=s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} = 1 - \frac{0.17083}{0.69921} = 0.75568">
+$s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} = 1 - \frac{0.17083}{0.69921} = 0.75568$
 
 And the empirical skill score for the dealer role is:
 
-<img src="https://render.githubusercontent.com/render/math?math=s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} \approx 1 - \frac{\widetilde{w}_r^{(d)}}{\widetilde{w}_a^{(d)}} = 1 - \frac{0.1686}{0.7043} = 0.76061">
+$s^{(d)} = 1 - \frac{w_r^{(d)}}{w_o^{(d)}} \approx 1 - \frac{\widetilde{w}_r^{(d)}}{\widetilde{w}_a^{(d)}} = 1 - \frac{0.1686}{0.7043} = 0.76061$
 
 Similar to the results of the one-player blackjack experiment, we can see here that approximating the optimal and random win rates for both player roles using AI agents gives us a good approximation of the true skill score for both player roles. Since the dealer role has a higher skill score than the player role, we can then interpret that skill affects the outcome of the game for the dealer role more than the player role.
 
@@ -259,9 +259,9 @@ In this project, I present a method to calculate the skill score: a measurement 
 * if it's not computationally feasible:
 	* train an AI agent for each player role to learn an optimal strategy given that all other players are using an optimal strategy
 		* extract the approximated optimal win rate for every player from the AI agents' learned strategies
-	* for every player role <img src="https://render.githubusercontent.com/render/math?math=p"> in the game:
-		* train an AI agent for each other player role to learn an optimal strategy given that this specific player role <img src="https://render.githubusercontent.com/render/math?math=p"> is using a random strategy and all other agents are using an optimal strategy
-		* extract the approximated random win rate for the player role <img src="https://render.githubusercontent.com/render/math?math=p">
+	* for every player role $p$ in the game:
+		* train an AI agent for each other player role to learn an optimal strategy given that this specific player role $p$ is using a random strategy and all other agents are using an optimal strategy
+		* extract the approximated random win rate for the player role $p$
 	* use the approximations for the optimal and random win rate to get the approximated skill scores for each player role
 
 ## Open Discussions
@@ -300,9 +300,9 @@ On the flip side, human players will never be able to implement the optimal stra
 
 This "human-centric" skill score would then be defined as follows:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{w_h}{w_H}">
+$s = 1 - \frac{w_h}{w_H}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=w_h"> is the win rate of a no-skill human player, and <img src="https://render.githubusercontent.com/render/math?math=w_H"> is the win rate of a maximum-skill human player.
+where $w_h$ is the win rate of a no-skill human player, and $w_H$ is the win rate of a maximum-skill human player.
 
 To get the win rates, we would need to get the strategies of a no-skill human player and maximum-skill human player. This could be hard or impossible to quantify; you would either have to show the player all possible game sequences and ask what actions they would take for each situation, or approximate their strategy using a heuristic (which may not be 100% accurate). Mathematically, this "human-centric" skill score is **the maximum proportion of the win rate of that player role that can be attributed to skill, if the game is played by humans**.
 
@@ -352,9 +352,9 @@ This makes using a random strategy as a baseline for calculating skill score adv
 ### Draws
 With games that allow draws, skill score is still relevant as long as the optimal win rate for player roles are not 0%. In the case that they are 0% win rate, we can calculate the skill score using the draw rate instead, assuming that the optimal draw rate is not 0%. The skill score would be calculated as follows:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{d_r}{d_o}">
+$s = 1 - \frac{d_r}{d_o}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=d_r"> is the draw rate of a random player, and <img src="https://render.githubusercontent.com/render/math?math=d_o"> is the draw rate rate of an optimal player.
+where $d_r$ is the draw rate of a random player, and $d_o$ is the draw rate rate of an optimal player.
 
 The skill score then be interpreted as **the maximum proportion of the draw rate of that player role that can be attributed to skill**.
 
@@ -365,9 +365,9 @@ In zero-sum games, there are clear winners and losers (or a draw situation where
 
 The skill score can account for games like these. Rather than calculating the win rates of the optimal and random strategy, we calculate the **reward received** if a player uses the optimal or random strategy. The skill score can then be calculated as such:
 
-<img src="https://render.githubusercontent.com/render/math?math=s = 1 - \frac{R_r}{R_o}">
+$s = 1 - \frac{R_r}{R_o}$
 
-where <img src="https://render.githubusercontent.com/render/math?math=R_r"> is the average reward received for a random player, and <img src="https://render.githubusercontent.com/render/math?math=R_o"> is the average reward received for an optimal player.
+where $R_r$ is the average reward received for a random player, and $R_o$ is the average reward received for an optimal player.
 
 The skill score can then be interpreted as **the maximum proportion of the reward received for that player role that can be attributed to skill**. The reward rate for the random player and optimal player can be used as skill floor and skill ceiling measures like before, except now they're in terms of reward received, rather than win rate.
 
